@@ -33,4 +33,12 @@ DB_USERNAME=
 DB_PASSWORD=
 ```
 
-5. Open http://localhost:8000
+5. Run:
+
+```
+
+php artisan migrate
+
+```
+
+6. Open http://localhost:8000
