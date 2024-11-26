@@ -31,13 +31,13 @@ class EmployeeAndProjectsMap
                         $this->calculateOverlappingDays(
                             interval: [
                                 'from_date' => $employees[$i]['from_date'],
-                                'to_date' => $employees[$i]['to_date']
+                                'to_date' => $employees[$i]['to_date'],
                             ],
                             otherInterval: [
                                 'from_date' => $employees[$j]['from_date'],
-                                'to_date' => $employees[$j]['to_date']
+                                'to_date' => $employees[$j]['to_date'],
                             ]
-                        )
+                        ),
                     ];
                 }
             }
@@ -58,10 +58,15 @@ class EmployeeAndProjectsMap
         foreach ($dataSet as $row) {
             [$employeeId, $projectId, $fromDate, $toDate] = $row;
 
-            $projectId = (string)$projectId;
-            $employeeId = (string)$employeeId;
+            $projectId = (string) $projectId;
+            $employeeId = (string) $employeeId;
             $fromDate = Carbon::parse($fromDate);
-            $toDate = Carbon::parse($toDate);
+            $toDate =
+                $toDate === 'null' || $toDate === 'NULL' || $toDate === null
+                    ? now()->toDateString()
+                    : $toDate;
+
+            Carbon::parse($toDate);
 
             if (!array_key_exists($projectId, $this->projects)) {
                 $this->projects[$projectId] = [];
@@ -70,13 +75,15 @@ class EmployeeAndProjectsMap
             $this->projects[$projectId][] = [
                 'id' => $employeeId,
                 'from_date' => $fromDate,
-                'to_date' => $toDate
+                'to_date' => $toDate,
             ];
         }
     }
 
-    private function calculateOverlappingDays(array $interval, array $otherInterval): int
-    {
+    private function calculateOverlappingDays(
+        array $interval,
+        array $otherInterval
+    ): int {
         $start = max($interval['from_date'], $otherInterval['from_date']);
 
         $end = min($interval['to_date'], $otherInterval['to_date']);
