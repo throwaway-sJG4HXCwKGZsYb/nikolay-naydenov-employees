@@ -9,7 +9,7 @@ class EmployeePairsCalculator
 
     }
 
-    public function getPair(): array
+    public function getMaxOverlapPair(): array
     {
         $mapping = $this->getEmployeeAndProjectsList();
         $maxOverlap = 0;

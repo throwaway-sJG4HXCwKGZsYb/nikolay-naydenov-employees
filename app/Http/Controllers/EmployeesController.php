@@ -2,23 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CsvRequest;
 use App\Imports\EmployeesImport;
 use App\Services\EmployeePairsCalculator;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class EmployeesController extends Controller
 {
-    public function retrievePair(Request $request): JsonResponse
+    public function showMaxOverlapPair(CsvRequest $request)
     {
-        $request->validate([
-            'file' => 'required|mimes:csv|max:1024',
-        ]);
-
         $rows = (new EmployeesImport())->toArray($request->file('file'))[0];
 
-        return response()->json([
-            'pair' => (new EmployeePairsCalculator($rows))->getPair(),
+        return view('max-overlap-pair', [
+            'pair' => (new EmployeePairsCalculator($rows))->getMaxOverlapPair(),
         ]);
+    }
+
+    public function showPairs(CsvRequest $request)
+    {
+        $rows = (new EmployeesImport())->toArray($request->file('file'))[0];
+
+        return view('pairs', [
+            'rows' => (new EmployeePairsCalculator(
+                $rows
+            ))->getEmployeeAndProjectsList(),
+        ]);
+    }
+
+    public function showForm()
+    {
+        return view('form');
     }
 }

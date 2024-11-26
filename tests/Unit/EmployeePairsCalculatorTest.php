@@ -12,7 +12,7 @@ class EmployeePairsCalculatorTest extends TestCase
     public function testGetPair(array $set, array $result): void
     {
         [$employee, $otherEmployee, $overlappingDays] =
-            (new EmployeePairsCalculator($set))->getPair();
+            (new EmployeePairsCalculator($set))->getMaxOverlapPair();
 
         $this->assertEquals($result[0], $employee);
         $this->assertEquals($result[1], $otherEmployee);
